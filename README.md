@@ -9,7 +9,9 @@ Ensure MDE is installed, configured and active on Linux, MacOS or Windows system
 # Known MDE setup issues
 
 * Selinux enforced on RHEL/Centos7 issue. Working on RHEL/Centos8
+```
 Error : wdavdaemon[20263]: /opt/microsoft/mdatp/sbin/wdavdaemon: error while loading shared libraries: libwdavdaemon_core.so: cannot enable executable stack as shared object requires: Permission denied
+```
 To solve this
 ```
 $ sepolicy generate -n wdavdaemon --init /opt/microsoft/mdatp/sbin/wdavdaemon
@@ -29,7 +31,7 @@ $ systemctl status mdatp
 
 * /var/opt/microsoft/mdatp need to have exec mount flag
 an alternate option is to move to a compatible location
-````
+```
 $ sudo systemctl stop mdatp
 $ sudo install -d -m 755 /usr/local/microsoft
 $ sudo bash -c 'mv /var/opt/microsoft/mdatp /usr/local/microsoft/ && ln -s /usr/local/microsoft/mdatp /var/opt/microsoft/'
