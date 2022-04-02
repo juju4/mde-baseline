@@ -180,7 +180,7 @@ control 'mde-3.1' do
     its('mode') { should cmp '0644' }
     it { should be_owned_by 'root' }
     its('content') { should match '-k mdatpmbr' }
-    its('content') { should match %r{-k mdatp$} }
+    its('content') { should match /-k mdatp$/ }
     # its('content') { should match 'Auditd rules for MDATP \(EDR\) audisp sensor' }
   end
   describe command('sudo auditctl -l | grep mdatp') do
