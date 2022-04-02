@@ -13,15 +13,13 @@ mde_version = input('mde_version', value: '101.62', description: 'Check mde vers
 mde_managed = input('mde_managed', value: false, description: 'Check mde is in managed mode')
 mde_passive_mode_enabled = input('mde_passive_mode_enabled', value: false, description: 'Check mde is set in passive mode')
 
+mde_dir = '/opt/microsoft/mdatp'
 if os.darwin?
-  mde_dir = '/opt/microsoft/mdatp'
-  mde_mdatp_path = '/usr/bin/mdatp'
   mde_mdatp_bin = '/opt/microsoft/mdatp/sbin/wdavdaemonclient'
   mde_bin = '/opt/microsoft/mdatp/sbin/wdavdaemon'
   mde_log1 = '/var/log/microsoft/mdatp/microsoft_defender.log'
   mde_log2 = '/var/log/microsoft/mdatp/microsoft_defender_core.log'
 else
-  mde_dir = '/opt/microsoft/mdatp'
   mde_mdatp_path = '/usr/bin/mdatp'
   mde_mdatp_bin = '/opt/microsoft/mdatp/sbin/wdavdaemonclient'
   mde_bin = '/opt/microsoft/mdatp/sbin/wdavdaemon'
@@ -69,7 +67,7 @@ control 'mde-2.0' do
     it { should be_installed }
     it { should be_enabled }
     it { should be_running }
-  end  
+  end
   describe processes('wdavdaemon') do
     # FIXME! non-deterministic order
     # its('users') { should eq %w[root root mdatp mdatp] }
@@ -85,7 +83,7 @@ control 'mde-3.0' do
   desc 'Appropriate setting should be configured'
   only_if { !(virtualization.role == 'guest' && virtualization.system == 'docker') && os.family != 'windows' }
   if mde_org_id
-    describe command("mdatp health --field org_id") do
+    describe command('mdatp health --field org_id') do
       its('stdout') { should_not match 'Error' }
       its('stderr') { should_not match 'Error' }
       its('stdout') { should match mde_org_id }
@@ -104,7 +102,7 @@ control 'mde-3.0' do
         its('content') { should include "\"proxy\": \"http://#{mde_proxy_host}:#{mde_proxy_port}\"" }
       end
     end
-    describe command("python -m json.tool /etc/opt/microsoft/mdatp/managed/mdatp_managed.json") do
+    describe command('python -m json.tool /etc/opt/microsoft/mdatp/managed/mdatp_managed.json') do
       its('stdout') { should_not match 'Error' }
       its('stderr') { should_not match 'Error' }
     end
@@ -126,7 +124,7 @@ control 'mde-3.0' do
       it { should be_owned_by 'root' }
       its('mode') { should cmp '0644' }
     end
-    describe command("mdatp health") do
+    describe command('mdatp health') do
       its('stdout') { should include ' [managed]' }
     end
   end
@@ -137,12 +135,12 @@ control 'mde-3.1' do
   title 'mde should be in healthy state'
   desc 'Health check should be true'
   only_if { !(virtualization.role == 'guest' && virtualization.system == 'docker') && os.family != 'windows' }
-  describe command("mdatp health --field healthy") do
+  describe command('mdatp health --field healthy') do
     its('stdout') { should_not match 'Error' }
     its('stderr') { should_not match 'Error' }
     its('stdout') { should match 'true' }
   end
-  describe command("mdatp health") do
+  describe command('mdatp health') do
     its('stdout') { should_not match 'Error' }
     its('stderr') { should_not match 'Error' }
     its('stdout') { should include 'health_issues                               : []' }
@@ -151,7 +149,7 @@ control 'mde-3.1' do
     its('stdout') { should include 'definitions_updated_minutes_ago             :' }
     its('stdout') { should include 'definitions_status                          : "up_to_date"' }
   end
-  describe command("mdatp connectivity test") do
+  describe command('mdatp connectivity test') do
     its('stdout') { should_not match 'Error' }
     its('stderr') { should_not match 'Error' }
     its('stdout') { should match 'Testing connection' }
@@ -159,7 +157,7 @@ control 'mde-3.1' do
   end
   # issue on RHEL/Centos7. work with extra selinux configuration.
   if os.redhat?
-    describe command("sestatus") do
+    describe command('sestatus') do
       if os.release =~ /^8\./
         its('stdout') { should match 'enforcing' }
       else
@@ -177,15 +175,15 @@ control 'mde-3.1' do
     end
   end
   # check mdatp auditd rules are present and loaded
-  describe file("/opt/microsoft/mdatp/conf/mdatp.rules") do
+  describe file('/opt/microsoft/mdatp/conf/mdatp.rules') do
     it { should be_file }
     its('mode') { should cmp '0644' }
     it { should be_owned_by 'root' }
-    its('content') { should match "-k mdatpmbr" }
-    its('content') { should match "-k mdatp$" }
-    # its('content') { should match "Auditd rules for MDATP \(EDR\) audisp sensor" }
+    its('content') { should match '-k mdatpmbr' }
+    its('content') { should match %r{-k mdatp$} }
+    # its('content') { should match 'Auditd rules for MDATP \(EDR\) audisp sensor' }
   end
-  describe command("sudo auditctl -l | grep mdatp") do
+  describe command('sudo auditctl -l | grep mdatp') do
     its('stdout') { should match /key=mdatp/ }
   end
   # /etc/audit/audit.rules (/etc/audit/rules.d/99-end.rules) '-e 2' issue immutable?
@@ -194,7 +192,7 @@ control 'mde-3.1' do
     it { should be_owned_by 'root' }
     its('mode') { should cmp '0660' }
     its('content') { should_not match "auditd_manager: Cloud exclusions won't be applied, because auditd is in lockdown mode. Restart required." }
-    its('content') { should_not match "Error connecting to server socket" }
+    its('content') { should_not match 'Error connecting to server socket' }
   end
 end
 
@@ -203,12 +201,17 @@ control 'mde-4.0' do
   title 'mde logs'
   desc 'Ensure mde logs exist and are written recently'
   only_if { !(virtualization.role == 'guest' && virtualization.system == 'docker') && os.family != 'windows' }
-  describe file('/var/log/microsoft/mdatp/microsoft_defender_core.log') do
+  describe file(mde_log1) do
     it { should be_file }
     it { should be_owned_by 'root' }
     its('mode') { should cmp '0660' }
   end
-  describe file('/var/log/microsoft/mdatp/microsoft_defender_core.log').mtime.to_i do
+  describe file(mde_log2) do
+    it { should be_file }
+    it { should be_owned_by 'root' }
+    its('mode') { should cmp '0660' }
+  end
+  describe file(mde_log2).mtime.to_i do
     it { should <= Time.now.to_i }
     it { should >= Time.now.to_i - 900 }
   end
