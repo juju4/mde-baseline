@@ -1,0 +1,8 @@
+name: mde-baseline
+title: Microsoft Defender for Endpoint (MDE) baseline - InSpec Profile
+maintainer: juju4
+copyright: juju4
+copyright_email: juju4@users.noreply.github.com
+license: All Rights Reserved
+summary: An InSpec Compliance Profile for Microsoft Defender for Endpoint (MDE)
+version: 0.1.0
