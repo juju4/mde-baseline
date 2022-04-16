@@ -48,5 +48,6 @@ jobs:
         run: |
           ls -lA /opt/microsoft/mdatp/conf/
           ls -lA /var/log/microsoft/mdatp/
+          chmod 644 /opt/microsoft/mdatp/conf/mdatp.rules
       - name: Run Inspec exec
-        run: inspec exec .
+        run: inspec exec --input-file input-test.yml .

@@ -30,4 +30,4 @@ jobs:
       - name: Run Inspec exec
         run: |
           c:\opscode\inspec\bin\inspec.bat --chef-license accept || exit 0
-          c:\opscode\inspec\bin\inspec.bat exec .
+          c:\opscode\inspec\bin\inspec.bat exec --input-file input-test.yml .
