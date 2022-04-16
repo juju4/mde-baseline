@@ -30,6 +30,7 @@ jobs:
       - name: Environment
         run: |
           set -x
+          env
           gem env
           which inspec
       - name: Run Inspec exec
