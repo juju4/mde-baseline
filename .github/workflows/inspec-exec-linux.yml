@@ -23,7 +23,7 @@ jobs:
       - name: Install Inspec upstream packages
         run: |
           curl -O https://packages.chef.io/files/stable/inspec/5.12.2/ubuntu/20.04/inspec_5.12.2-1_amd64.deb
-          sudo apt install -y inspec_5.12.2-1_amd64.deb
+          sudo apt-get install -y ./inspec_5.12.2-1_amd64.deb
       - name: Environment
         run: |
           set -x
