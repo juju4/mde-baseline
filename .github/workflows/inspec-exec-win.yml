@@ -32,5 +32,6 @@ jobs:
           set
           gem env
       - name: Run Inspec exec
-        run: inspec exec .
+        run: |
+          C:\hostedtoolcache\windows\Ruby\3.0.3\x64\bin\inspec exec .
         continue-on-error: true

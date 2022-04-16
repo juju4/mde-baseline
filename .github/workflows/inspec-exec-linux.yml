@@ -32,9 +32,10 @@ jobs:
           set -x
           env
           gem env
-          which inspec
+          which inspec || true
       - name: Run Inspec exec
-        run: inspec exec .
+        run: |
+          /opt/hostedtoolcache/Ruby/3.0.4/x64/bin/inspec exec .
         continue-on-error: true
       # https://docs.microsoft.com/en-us/microsoft-365/security/defender-endpoint/linux-install-manually
       - name: Install MDE without onboarding
@@ -49,4 +50,5 @@ jobs:
           sudo apt-get install -y mdatp
           mdatp health
       - name: Run Inspec exec
-        run: inspec exec .
+        run: |
+          /opt/hostedtoolcache/Ruby/3.0.4/x64/bin/inspec exec .
