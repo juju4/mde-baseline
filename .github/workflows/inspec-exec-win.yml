@@ -9,7 +9,7 @@ jobs:
   build:
 
     runs-on: windows-latest
-    continue-on-error: true
+    continue-on-error: false
     strategy:
       fail-fast: false
       max-parallel: 4
@@ -29,5 +29,5 @@ jobs:
         continue-on-error: true
       - name: Run Inspec exec
         run: |
-          c:\opscode\inspec\bin\inspec.bat --chef-license accept || exit 0
+          c:\opscode\inspec\bin\inspec.bat --chef-license accept
           c:\opscode\inspec\bin\inspec.bat exec --input-file input-test.yml .
