@@ -9,14 +9,10 @@ jobs:
   build:
 
     runs-on: windows-latest
-    continue-on-error: ${{ matrix.experimental }}
+    continue-on-error: true
     strategy:
       fail-fast: false
       max-parallel: 4
-      matrix:
-        include:
-          - ruby-version: '3.0'
-            experimental: false
 
     steps:
       - uses: actions/checkout@v2
@@ -38,6 +34,5 @@ jobs:
         continue-on-error: true
       - name: Run Inspec exec
         run: |
-          set CHEF_LICENSE=accept-no-persist
+          c:\opscode\inspec\bin\inspec.bat --chef-license accept || exit 0
           c:\opscode\inspec\bin\inspec.bat exec .
-        continue-on-error: true
