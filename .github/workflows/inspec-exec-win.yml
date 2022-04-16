@@ -29,7 +29,6 @@ jobs:
         run: gem install inspec
       - name: Environment
         run: |
-          set
           gem env
       - name: Run Inspec exec
         run: inspec exec .

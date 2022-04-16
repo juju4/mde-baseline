@@ -46,6 +46,9 @@ This will likely address health issue: engine v1 not available
 # References
 
 * https://docs.microsoft.com/en-us/microsoft-365/security/defender-endpoint/
+* https://docs.microsoft.com/en-us/microsoft-365/security/defender-endpoint/linux-install-with-ansible, https://github.com/MicrosoftDocs/microsoft-365-docs/blob/public/microsoft-365/security/defender-endpoint/linux-install-with-ansible.md
+* https://docs.microsoft.com/en-us/microsoft-365/security/defender-endpoint/linux-install-with-puppet
+* https://docs.microsoft.com/en-us/microsoft-365/security/defender-endpoint/linux-deploy-defender-for-endpoint-with-chef
 * https://docs.microsoft.com/en-us/microsoft-365/security/defender-endpoint/microsoft-defender-endpoint-linux
 * https://docs.microsoft.com/en-us/microsoft-365/security/defender-endpoint/health-status
 If definitions are not updated automatically, try manually

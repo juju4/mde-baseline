@@ -60,8 +60,8 @@ end
 
 control 'mde-2.0' do
   impact 1.0
-  title 'mded should be running'
-  desc 'Ensure mded is running'
+  title 'mde should be running'
+  desc 'Ensure mde is running'
   only_if { !(virtualization.role == 'guest' && virtualization.system == 'docker') && os.family != 'windows' }
   describe service('mdatp') do
     it { should be_installed }

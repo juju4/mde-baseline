@@ -32,7 +32,9 @@ jobs:
           set -x
           env
           gem env
-          which inspec
+          gem which inspec || true
+          which inspec || true
+          bundle show inspec || true
       - name: Run Inspec exec
         run: inspec exec .
         continue-on-error: true

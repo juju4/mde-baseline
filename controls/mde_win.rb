@@ -7,6 +7,7 @@ title 'MDE Windows section'
 
 mde_org_id = input('mde_org_id', value: false, description: 'Check mde use the correct Org ID')
 mde_tags = input('mde_tags', value: false, description: 'Check mde use appropriate tags, BU, product.')
+mde_passive_mode_enabled = input('mde_passive_mode_enabled', value: false, description: 'Check mde is set in passive mode')
 
 mde_dir = 'C:\Program Files\Windows Defender Advanced Threat Protection'
 mde_bin = 'C:\Program Files\Windows Defender Advanced Threat Protection\MsSense.exe'
@@ -34,6 +35,12 @@ control 'mdewin-2.0' do
   title 'mde should be running'
   desc 'Ensure mde is running'
   only_if { os.family == 'windows' }
+  # Microsoft Defender Antivirus
+  describe service('WinDefend') do
+    it { should be_installed }
+    it { should be_enabled }
+  end
+  # Microsoft Defender for Endpoint
   describe service('Sense') do
     it { should be_installed }
     it { should be_enabled }
@@ -66,6 +73,14 @@ control 'mdewin-3.0' do
       key: 'SOFTWARE\Policies\Microsoft\Windows Advanced Threat Protection\DeviceTagging',
       }) do
       its('Group') { should eq mde_tags }
+    end
+  end
+  if mde_passive_mode_enabled
+    describe registry_key({
+      hive: 'HKEY_LOCAL_MACHINE',
+      key: 'SOFTWARE\Policies\Microsoft\Windows Advanced Threat Protection',
+      }) do
+      its('ForceDefenderPassiveMode') { should eq '1' }
     end
   end
 end
