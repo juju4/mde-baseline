@@ -6,6 +6,7 @@
 title 'MDE Windows section'
 
 mde_org_id = input('mde_org_id', value: false, description: 'Check mde use the correct Org ID')
+mde_healthy = input('mde_healthy', value: true, description: 'Check mde is healthy - requires license/org_id registration')
 mde_tags = input('mde_tags', value: false, description: 'Check mde use appropriate tags, BU, product.')
 mde_passive_mode_enabled = input('mde_passive_mode_enabled', value: false, description: 'Check mde is set in passive mode')
 
@@ -52,11 +53,13 @@ control 'mdewin-3.0' do
   title 'mde should be configured'
   desc 'Appropriate setting should be configured'
   only_if { os.family == 'windows' }
-  describe registry_key({
-    hive: 'HKEY_LOCAL_MACHINE',
-    key: 'SOFTWARE\Policies\Microsoft\Windows Advanced Threat Protection\Status',
-    }) do
-    its('OnboardingState') { should eq '1' }
+  if mde_healthy
+    describe registry_key({
+      hive: 'HKEY_LOCAL_MACHINE',
+      key: 'SOFTWARE\Policies\Microsoft\Windows Advanced Threat Protection\Status',
+      }) do
+      its('OnboardingState') { should eq '1' }
+    end
   end
   if mde_org_id
     describe registry_key({

@@ -9,27 +9,25 @@ jobs:
   build:
 
     runs-on: windows-latest
-    continue-on-error: ${{ matrix.experimental }}
+    continue-on-error: true
     strategy:
       fail-fast: false
       max-parallel: 4
-      matrix:
-        include:
-          - ruby-version: '3.0'
-            experimental: false
 
     steps:
       - uses: actions/checkout@v2
-      - name: Set up Ruby
-        uses: ruby/setup-ruby@v1
-        with:
-          ruby-version: ${{ matrix.ruby-version }}
-          bundler-cache: true # runs 'bundle install' and caches installed gems automatically
-      - name: Install Inspec
-        run: gem install inspec
-      - name: Environment
+      - name: Install Inspec upstream packages
         run: |
-          gem env
-      - name: Run Inspec exec
-        run: inspec exec .
+          curl -O https://packages.chef.io/files/current/inspec/5.12.2/windows/2022/inspec-5.12.2-1-x64.msi
+          msiexec /quiet /passive /i inspec-5.12.2-1-x64.msi /qn /norestart /le c:\inspec-msi.log
+          type c:\inspec-msi.log
+      - name: Check Inspec
+        run: |
+          dir c:\
+          dir c:\opscode
+          dir c:\opscode\inspec\bin
         continue-on-error: true
+      - name: Run Inspec exec
+        run: |
+          c:\opscode\inspec\bin\inspec.bat --chef-license accept || exit 0
+          c:\opscode\inspec\bin\inspec.bat exec .

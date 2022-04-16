@@ -6,6 +6,7 @@
 title 'MDE section'
 
 mde_org_id = input('mde_org_id', value: false, description: 'Check mde use the correct Org ID')
+mde_healthy = input('mde_healthy', value: true, description: 'Check mde is healthy - requires license/org_id registration')
 mde_tags = input('mde_tags', value: false, description: 'Check mde use appropriate tags, BU, product.')
 mde_proxy_host = input('mde_proxy_host', value: false, description: 'Check mde use appropriate proxy settings')
 mde_proxy_port = input('mde_proxy_port', value: false, description: 'Check mde use appropriate proxy settings')
@@ -135,15 +136,19 @@ control 'mde-3.1' do
   title 'mde should be in healthy state'
   desc 'Health check should be true'
   only_if { !(virtualization.role == 'guest' && virtualization.system == 'docker') && os.family != 'windows' }
-  describe command('mdatp health --field healthy') do
-    its('stdout') { should_not match 'Error' }
-    its('stderr') { should_not match 'Error' }
-    its('stdout') { should match 'true' }
+  if mde_healthy
+    describe command('mdatp health --field healthy') do
+      its('stdout') { should_not match 'Error' }
+      its('stderr') { should_not match 'Error' }
+      its('stdout') { should match 'true' }
+    end
   end
   describe command('mdatp health') do
     its('stdout') { should_not match 'Error' }
     its('stderr') { should_not match 'Error' }
-    its('stdout') { should include 'health_issues                               : []' }
+    if mde_healthy
+      its('stdout') { should include 'health_issues                               : []' }
+    end
     its('stdout') { should include "passive_mode_enabled                        : #{mde_passive_mode_enabled}" }
     # TODO: check less than x minutes old?
     its('stdout') { should include 'definitions_updated_minutes_ago             :' }
@@ -203,7 +208,7 @@ control 'mde-4.0' do
   only_if { !(virtualization.role == 'guest' && virtualization.system == 'docker') && os.family != 'windows' }
   describe file(mde_log1) do
     it { should be_file }
-    it { should be_owned_by 'root' }
+    it { should be_owned_by 'mdatp' }
     its('mode') { should cmp '0660' }
   end
   describe file(mde_log2) do
