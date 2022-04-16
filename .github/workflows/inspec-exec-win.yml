@@ -23,7 +23,7 @@ jobs:
       - name: Install Inspec upstream packages
         run: |
           curl -O https://packages.chef.io/files/current/inspec/5.12.2/windows/2022/inspec-5.12.2-1-x64.msi
-          msiexec /i inspec-5.12.2-1-x64.msi /qn /norestart /le c:\inspec-msi.log
+          msiexec /quiet /passive /i inspec-5.12.2-1-x64.msi /qn /norestart /le c:\inspec-msi.log
           type c:\inspec-msi.log
       - name: Run Inspec exec
         run: |
