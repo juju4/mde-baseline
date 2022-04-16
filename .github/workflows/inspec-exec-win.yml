@@ -26,7 +26,9 @@ jobs:
           dir c:\
           dir c:\opscode
           dir c:\opscode\inspec\bin
+          mkdir C:\chef\accepted_licenses
+          echo > C:\chef\accepted_licenses\inspec
         continue-on-error: true
       - name: Run Inspec exec
         run: |
-          c:\opscode\inspec\bin\inspec.bat exec . --chef-license accept
+          c:\opscode\inspec\bin\inspec.bat exec .
