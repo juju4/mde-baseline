@@ -20,21 +20,15 @@ jobs:
 
     steps:
       - uses: actions/checkout@v2
-      - name: Set up Ruby
-        uses: ruby/setup-ruby@v1
-        with:
-          ruby-version: ${{ matrix.ruby-version }}
-          bundler-cache: true # runs 'bundle install' and caches installed gems automatically
-      - name: Install Inspec
-        run: gem install inspec
+      - name: Install Inspec upstream packages
+        run: |
+          curl -O https://packages.chef.io/files/stable/inspec/5.12.2/ubuntu/20.04/inspec_5.12.2-1_amd64.deb
+          sudo apt install -y inspec_5.12.2-1_amd64.deb
       - name: Environment
         run: |
           set -x
           env
-          gem env
-          gem which inspec || true
           which inspec || true
-          bundle show inspec || true
       - name: Run Inspec exec
         run: inspec exec .
         continue-on-error: true
