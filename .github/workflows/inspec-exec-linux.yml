@@ -46,5 +46,10 @@ jobs:
           sudo apt-get update
           sudo apt-get install -y mdatp
           mdatp health
+          mdatp connectivity test
+          mdatp definitions update
+      - name: Misc
+        run:
+          ls -lA /var/log/microsoft/mdatp/
       - name: Run Inspec exec
         run: inspec exec .
