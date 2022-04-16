@@ -25,6 +25,17 @@ jobs:
           curl -O https://packages.chef.io/files/current/inspec/5.12.2/windows/2022/inspec-5.12.2-1-x64.msi
           msiexec /quiet /passive /i inspec-5.12.2-1-x64.msi /qn /norestart /le c:\inspec-msi.log
           type c:\inspec-msi.log
+      - name: List installed packages
+        run: |
+          Get-WMIObject -Query "SELECT * FROM Win32_Product" | FL
+        shell: pwsh
+        continue-on-error: true
+      - name: Check Inspec
+        run: |
+          dir c:\
+          dir c:\opscode
+          dir c:\opscode\inspec\bin
+        continue-on-error: true
       - name: Run Inspec exec
         run: |
           set CHEF_LICENSE=accept-no-persist
