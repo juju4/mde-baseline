@@ -45,7 +45,7 @@ jobs:
           mdatp connectivity test
           mdatp definitions update
       - name: Misc
-        run:
+        run: |
           ls -lA /opt/microsoft/mdatp/conf/
           ls -lA /var/log/microsoft/mdatp/
       - name: Run Inspec exec
