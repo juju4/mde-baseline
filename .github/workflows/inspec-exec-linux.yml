@@ -1,0 +1,46 @@
+---
+name: inspec-exec-linux
+
+on:
+  push:
+  pull_request:
+
+jobs:
+  build:
+
+    runs-on: ubuntu-latest
+    continue-on-error: ${{ matrix.experimental }}
+    strategy:
+      fail-fast: false
+      max-parallel: 4
+      matrix:
+        include:
+          - ruby-version: '3.0'
+            experimental: false
+
+    steps:
+      - uses: actions/checkout@v2
+      - name: Set up Ruby
+        uses: ruby/setup-ruby@v1
+        with:
+          ruby-version: ${{ matrix.ruby-version }}
+          bundler-cache: true # runs 'bundle install' and caches installed gems automatically
+      - name: Install Inspec
+        run: gem install inspec
+      - name: Run Inspec exec
+        run: inspec exec .
+        continue-on-error: true
+      # https://docs.microsoft.com/en-us/microsoft-365/security/defender-endpoint/linux-install-manually
+      - name: Install MDE without onboarding
+        run: |
+          set -x
+          sudo apt-get install -y curl libplist-utils gpg apt-transport-https
+          curl https://packages.microsoft.com/keys/microsoft.asc | sudo apt-key add -
+          curl -o microsoft.list https://packages.microsoft.com/config/ubuntu/20.04/prod.list
+          cat microsoft.list
+          sudo mv ./microsoft.list /etc/apt/sources.list.d/microsoft-prod.list
+          sudo apt-get update
+          sudo apt-get install -y mdatp
+          mdatp health
+      - name: Run Inspec exec
+        run: inspec exec .
