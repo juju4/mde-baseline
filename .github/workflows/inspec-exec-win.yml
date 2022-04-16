@@ -29,5 +29,5 @@ jobs:
         continue-on-error: true
       - name: Run Inspec exec
         run: |
-          set CHEF_LICENSE=accept-no-persist
+          setx CHEF_LICENSE accept-no-persist
           c:\opscode\inspec\bin\inspec.bat exec .
