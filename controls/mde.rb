@@ -203,7 +203,7 @@ control 'mde-4.0' do
   only_if { !(virtualization.role == 'guest' && virtualization.system == 'docker') && os.family != 'windows' }
   describe file(mde_log1) do
     it { should be_file }
-    it { should be_owned_by 'root' }
+    it { should be_owned_by 'mdatp' }
     its('mode') { should cmp '0660' }
   end
   describe file(mde_log2) do
